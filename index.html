@@ -1334,31 +1334,33 @@ window.openPostModal = function() {
 
 function showAdModal(onComplete) {
   const container = document.getElementById('modal-container');
-  let adTime = 5; let skippable = false;
+  let adTime = 5;
+  
   container.innerHTML = `
     <div class="ad-overlay" id="ad-overlay">
       <div class="ad-box">
-        <div class="ad-video-area">
-          <div style="text-align:center;color:white;padding:20px">
-            <div style="font-size:48px;margin-bottom:12px">📺</div>
-            <div style="font-size:18px;font-weight:600;margin-bottom:6px">Publicité sponsorisée</div>
-            <div style="font-size:13px;opacity:.7">Pour publier une annonce gratuitement,<br>regardez cette courte publicité</div>
-            <div style="margin-top:20px;padding:12px 20px;background:rgba(255,255,255,.1);border-radius:var(--radius);border:1px solid rgba(255,255,255,.2)">
-              <div style="font-size:11px;opacity:.6;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">OFFRE SPÉCIALE</div>
-              <div style="font-size:22px;font-weight:700">50% sur votre prochaine commande</div>
-              <div style="font-size:12px;opacity:.7;margin-top:2px">ShopExpress — Code: TROUVAILLE50</div>
-            </div>
-          </div>
-          <div class="ad-countdown" id="ad-countdown">⏱ ${adTime}s</div>
-          <button class="ad-skip-btn" id="ad-skip" disabled onclick="skipAd()">Passer (${adTime}s)</button>
+        <div class="ad-video-area" style="background:#f5f5f5;min-height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px">
+          <!-- Bannière AdSense -->
+          <ins class="adsbygoogle"
+               style="display:block;width:100%;min-height:250px"
+               data-ad-client="ca-pub-2068055202205199"
+               data-ad-slot="8282784506"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+          <div class="ad-countdown" id="ad-countdown" style="position:relative;margin-top:8px;background:#000;color:#fff;padding:4px 10px;border-radius:99px;font-size:12px">⏱ ${adTime}s</div>
+          <button class="ad-skip-btn" id="ad-skip" disabled onclick="skipAd()" style="position:relative;margin-top:8px">Passer (${adTime}s)</button>
         </div>
         <div class="ad-info">
           <h3>📦 Publier une annonce</h3>
-          <p>Regardez 5 secondes pour accéder gratuitement à la publication</p>
+          <p>Patientez 5 secondes pour accéder gratuitement à la publication</p>
           <div class="ad-progress"><div class="ad-progress-fill" id="ad-prog" style="width:0%"></div></div>
         </div>
       </div>
     </div>`;
+
+  // Initialiser AdSense après injection dans le DOM
+  try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+
   window._adComplete = onComplete;
   const interval = setInterval(() => {
     adTime--;
@@ -1368,10 +1370,10 @@ function showAdModal(onComplete) {
     const skipBtn = document.getElementById('ad-skip');
     if(prog) prog.style.width = fill + '%';
     if(count) count.textContent = `⏱ ${adTime}s`;
-    if(skipBtn) skipBtn.textContent = adTime > 0 ? `Passer (${adTime}s)` : 'Passer ✓';
+    if(skipBtn) skipBtn.textContent = adTime > 0 ? `Passer (${adTime}s)` : 'Continuer →';
     if(adTime <= 0) {
       clearInterval(interval);
-      if(skipBtn) { skipBtn.disabled = false; skipBtn.textContent = 'Continuer →'; }
+      if(skipBtn) { skipBtn.disabled = false; }
     }
   }, 1000);
   window._adInterval = interval;
